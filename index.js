@@ -44,5 +44,6 @@ const closeVideo = (index)=>{
     const layoutHidden = document.getElementById(`layout-hidden`);
     videoItem.style.display = 'none';
     layoutHidden.style.display = 'none';
-    videoPlayer.close();
+    videoPlayer.pause();
+    videoPlayer.currentTime = 0;
 }
