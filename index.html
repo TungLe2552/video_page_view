@@ -4,7 +4,122 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Document</title>
-    <link rel="stylesheet" href="styles.css">
+    <!-- <link rel="stylesheet" href="styles.css"> -->
+    <style>
+        html {
+            box-sizing: border-box;
+            width: 100%;
+            height: 100vh;
+            overflow: hidden;
+            padding:0;
+            margin:0;
+        }
+        * {
+        margin: 0;
+        padding: 0;
+        }
+        img {
+        object-fit: contain;
+        width: 100%;
+        height: 100%;
+        }
+
+        .main {
+        height: 100vh;
+        overflow-y: auto;
+        }
+        .layout-hidden {
+        position: absolute;
+        top: 0;
+        right: 0;
+        left: 0;
+        bottom: 0;
+        background: rgba(255, 255, 255, 0.42);
+        z-index: 1;
+        }
+        .video {
+        position: absolute;
+        z-index: 2;
+        }
+        .close {
+        position: absolute;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        z-index: 10;
+        width: 40px;
+        height: 40px;
+        font-size: 18spx;
+        border-radius: 50%;
+        background: white;
+        cursor: pointer;
+        }
+        .video-wrap {
+        border-radius: 15px;
+        overflow: hidden;
+        }
+        @media (min-width: 768px) {
+        .close{
+            right: 20px;
+            top: 20px;
+        }
+        .video {
+            width: 360px;
+            height: 640px;
+            right: 40%;
+            bottom: 15%;
+        }
+        video {
+            width: 360px;
+            height: 640px;
+            object-fit: cover;
+            border-radius: 15px;
+        }
+        .wrapper {
+            max-width: calc(240px * 5 + 5px * 4);
+            display: flex;
+            margin: 0 auto;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 5px;
+        }
+        .thumbnail {
+            border-radius: 15px;
+            width: 236px;
+            height: 366px;
+            overflow: hidden;
+        }
+        }
+        @media (max-width: 768px) {
+        .wrapper {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 3px;
+        }
+        .video {
+            width: 290px;
+            height: 510px;
+            right: 15%;
+            bottom: 20%;
+        }
+        video {
+            width: 290px;
+            height: 510px;
+            object-fit: cover;
+            border-radius: 8px;
+        }
+        .thumbnail {
+            border-radius: 8px;
+            width: 100%;
+            overflow: hidden;
+        }
+        .close{
+            right: 45%;
+            bottom: -10%;
+        }
+        }
+
+    </style>
 </head>
 <body>
     <div class="main">
@@ -16,5 +131,55 @@
 
     </div>
 </body>
-<script src="index.js"></script>
+<script>
+
+    let content = '';
+    for (let index = 1; index <= 15; index++) {
+        content += `
+        <div class="video-item" id="${index}">
+            <div id="img-${index}" class="thumbnail">
+                <img id="thumbnail-${index}"  src="public/image/t-${index}.webp" alt="" onclick="playVideo(${index})">
+            </div>
+            <div id="video-${index}" class="video" style="display: none">
+                <div style="position: relative;">
+                    <img id="close-${index}" src="public/x_close.png" class="close" onclick="closeVideo(${index})"/>
+
+                        <video controls id="videoPlayer-${index}">
+                            <source src="public/video/v-${index}.mp4" type="video/mp4">
+                        </video>
+
+                </div>
+            </div>
+        </div>
+        `;
+    }
+
+    document.getElementById('wrapper').innerHTML = content;
+    const playVideo = (index) => {
+        const videoPlayer = document.getElementById(`videoPlayer-${index}`);
+        const videoItem = document.getElementById(`video-${index}`);
+        const layoutHidden = document.getElementById(`layout-hidden`);
+
+
+        videoItem.style.display = 'block';
+        layoutHidden.style.display = 'block'
+        videoPlayer.play();
+
+        // Xử lý sự kiện kết thúc video
+        videoPlayer.addEventListener('ended', () => {
+            videoItem.style.display = 'none';
+            layoutHidden.style.display = 'none';
+            console.log(1);
+        });
+    };
+    const closeVideo = (index)=>{
+        const videoItem = document.getElementById(`video-${index}`);
+        const videoPlayer = document.getElementById(`videoPlayer-${index}`);
+        const layoutHidden = document.getElementById(`layout-hidden`);
+        videoItem.style.display = 'none';
+        layoutHidden.style.display = 'none';
+        videoPlayer.pause();
+        videoPlayer.currentTime = 0;
+    }
+</script>
 </html>
